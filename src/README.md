@@ -18,9 +18,6 @@ actions:
   - text: 🍭 React 源码
     link: ./react/
 
-  - text: 🤡 Vue 源码
-    link: ./vue/
-
   - text: 🔥 前端面试题
     link: ./interview/
 ---
