@@ -1,15 +1,18 @@
 ---
 home: true
 icon: home
-title: LeetCode-JS
-heroImage: assets/image/leetcode-js-logo.png
+title: codeYang
+backtotop: false
+# heroImage: assets/image/leetcode-js-logo.png
 bgImage: https://theme-hope-assets.vuejs.press/bg/6-light.svg
 bgImageDark: https://theme-hope-assets.vuejs.press/bg/6-dark.svg
 bgImageStyle:
   background-attachment: fixed
-heroText: LeetCode-JS
+heroText: CoderYang
 heroFullScreen: true
-tagline: LeetCode 算法 + 框架源码 + 前端八股文 = Offer
+displayFooter: false
+copyright: Copyright © 2024 yangda666
+tagline: 设计模式 + 框架源码 +  面试题 = CV前端工程师
 actions:
   - text: 🧭 LeetCode 通关指南
     link: ./leetcode/
