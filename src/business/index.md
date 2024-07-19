@@ -1,6 +1,6 @@
 ---
 title: 业务积累
-icon: object-group
+icon: business
 order: 2
 category:
   - 业务

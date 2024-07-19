@@ -11,7 +11,11 @@ export default hopeTheme({
     url: "https://github.com/yangda666",
   },
 
-  iconAssets: "fontawesome-with-brands",
+  // iconAssets: "fontawesome-with-brands",
+  iconAssets: [
+    "//at.alicdn.com/t/c/font_4622539_gsezjpsl0v6.css",
+    // "fontawesome",
+  ],
 
   logo: "https://theme-hope-assets.vuejs.press/logo.svg",
 
