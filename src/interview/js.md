@@ -1543,9 +1543,7 @@ event loop 的执行顺序：
   3. process.nextTick()属于微任务，而且和其他微任务的优先级是一样的，不存在哪个微任务的优先级高就先执行谁。但是在 node 中，process.nextTick()的优先级要高于其他微任务，也就是说，在两个阶段之间执行微任务时，若存在 process.nextTick()，则先执行它，然后再执行其他微任务；
      细节 [掘金](https://juejin.cn/post/7010308647792148511) [阿里云](https://developer.aliyun.com/article/1312240)
 
-     :::
-
-### Promise 的几道基础题
+:::
 
 ## 14. JS 是如何处理异步的？
 
