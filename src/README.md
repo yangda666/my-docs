@@ -23,4 +23,7 @@ actions:
 
   - text: 🔥 前端面试题
     link: ./interview/
+
+  - text: 🔥 你不知道的javaScript
+    link: ./js/
 ---
