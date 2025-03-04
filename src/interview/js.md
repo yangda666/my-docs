@@ -1616,7 +1616,7 @@ Function.prototype.myCall = function (context, ...args) {
      构建 DOM 树是一个增量的过程，浏览器会在下载 HTML 文档的同时开始解析和构建 DOM 树。这种流式处理方式有助于提高页面加载速度和用户体验。
 2. 解析 CSS 构建 CSSOM 树
    - CSSOM（CSS Object Model）树是一个与 DOM 树平行的数据结构，用于表示样式信息。以下是构建 CSSOM 树的详细步骤：
-   - 下载 CSS 文件：浏览器在解析 HTML 时，遇到 <link> 标签或 <style> 标签时，会下载外部 CSS 文件或解析内嵌的 CSS 样式。
+   - 下载 CSS 文件：浏览器在解析 HTML 时，遇到`<link>`标签或 `<style>` 标签时，会下载外部 CSS 文件或解析内嵌的 CSS 样式。
    - 解析 CSS：浏览器将 CSS 文件解析成一系列的规则集（rule sets），每个规则集包含选择器和声明块。选择器用于匹配 DOM 元素，声明块包含样式属性和值。
    - 构建 CSSOM 树：浏览器根据解析的规则集构建 CSSOM 树。CSSOM 树的每个节点代表一个 CSS 规则集，包含选择器和样式声明。
    - 处理 @import 规则：如果 CSS 中包含 @import 规则，浏览器会暂停当前 CSS 的解析，优先下载并解析被导入的 CSS 文件，然后继续解析原始 CSS。
