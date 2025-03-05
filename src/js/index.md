@@ -210,3 +210,77 @@ function createCounter(num) {
   };
 }
 ```
+
+## 第二章 this 全面解析
+
+### 什么是 this
+
+this 是在运行时进行绑定的，并不是在编写时绑定，它的上下文取决于函数调用时的各种条件。this 的绑定和函数声明的位置没有任何关系，只取决于函数的调用方式。当一个函数被调用时，会创建一个执行上下文 。这个执行上下文会包含函数在哪里被调用（调用栈） 、函数的调用方法、传入的参数等信息。this 就是记录的其中一个属性，会在函数执行的过程中用到。
+
+## 为什么需要 this
+
+```javascript
+function identify() {
+  return this.name.toUpperCase();
+}
+function speak() {
+  var greeting = "Hello, I'm " + identify.call(this);
+  console.log(greeting);
+}
+var me = {
+  name: "Kyle",
+};
+var you = {
+  name: "Reader",
+};
+identify.call(me); // KYLE
+identify.call(you); // READER
+speak.call(me); // Hello, 我是KYLE
+speak.call(you); // Hello, 我是 READER
+```
+
+这段代码可以在不同的上下文对象（me 和 you）中重复使用函数 identify() 和 speak()，不用针对每个对象编写不同版本的函数。
+
+## 我们对 this 的误解
+
+- 误解一：人们很容易把 this 理解成指向函数自身
+
+```javascript
+function foo(num) {
+  console.log("foo: " + num);
+  // 记录foo被调用的次数
+  this.count++;
+}
+foo.count = 0;
+var i;
+for (i = 0; i < 10; i++) {
+  if (i > 5) {
+    foo(i);
+  }
+}
+// foo: 6
+// foo: 7
+// foo: 8
+// foo: 9
+// foo被调用了多少次？
+console.log(foo.count); // 0
+```
+
+输出的结果为 0 为什么？
+console.log 语句产生了 4 条输出，证明 foo(..) 确实被调用了 4 次，但是 foo.count 仍然是 0。显然从字面意思来理解 this 是错误的执行 foo.count = 0 时，的确向函数对象 foo 添加了一个属性 count。但是函数内部代码 this.count 中的 this 并不是指向那个函数对象，所以虽然属性名相同，根对象却并不相同，困惑随之产生。
+
+- 误解二：人们很容易把 this 的作用域指向函数
+
+```javascript
+function foo() {
+  var a = 2;
+  this.bar();
+}
+function bar() {
+  console.log(this.a);
+}
+foo(); // ReferenceError: a is not defined
+```
+
+这段代码非常完美（同时也令人伤感）地展示了 this 多么容易误导人。
+首先，这段代码试图通过 this.bar() 来引用 bar() 函数。这是绝对不可能成功的。调用 bar() 最自然的方法是省略前面的 this，直接使用词法引用标识符。
