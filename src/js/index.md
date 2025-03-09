@@ -476,4 +476,13 @@ foo(); // ReferenceError: a is not defined
 
 - 绑定例外
 
+  - 忽略显示绑定
+    ·
+
+  ```javascript
+  function foo() {
+    console.log(this.a);
+  }
+  ```
+
 - this 词法
