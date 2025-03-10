@@ -41,3 +41,39 @@ headerDepth: 2
 ```
 
 :::
+
+# 1. 实现 flex 布局中的 flex-direction: column-reverse 的方式有哪些
+
+:::
+
+- 1. 使用 grid 布局
+
+```css
+.container {
+  display: grid;
+  grid-template-rows: repeat(2, 1fr);
+  grid-auto-flow: column;
+}
+.item {
+  width: 100%;
+  line-height: 100px;
+  text-align: center;
+}
+.item-1 {
+  grid-row: 2;
+  background-color: #f00;
+}
+.item-2 {
+  grid-row: 1;
+  background-color: #0f0;
+}
+```
+
+```html
+<div class="container">
+  <div class="item item-1">1</div>
+  <div class="item item-2">2</div>
+</div>
+```
+
+:::
