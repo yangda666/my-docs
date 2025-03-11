@@ -14,6 +14,89 @@ category:
 
 flex 布局是 css3 中新增的布局方式，可以轻松地在容器中对齐和分配空间。
 
+### 小技巧 2: 使用 CSS 变量
+
+CSS 变量可以让你在整个样式表中重用值，方便维护和修改。例如：
+
+```css
+:root {
+  --primary-color: #11121a;
+  --hover-color: #272832;
+  --accent-color: #0071ff;
+}
+```
+
+### 小技巧 3: 响应式设计
+
+使用媒体查询来创建适应不同屏幕尺寸的布局。例如：
+
+```css
+@media screen and (max-width: 700px) {
+  nav {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    height: 100vh;
+    width: min(15em, 100%);
+    z-index: 10;
+    transition: right 300ms ease-in-out;
+  }
+  nav.show {
+    right: 0;
+  }
+}
+```
+
+### 小技巧 4: 使用 `:focus` 伪类
+
+为可访问性添加样式，确保用户在使用键盘导航时能够看到焦点。例如：
+
+```css
+.skip-link:focus {
+  opacity: 1;
+  pointer-events: auto;
+  outline: 3px solid #ffffff;
+}
+```
+
+### 小技巧 5: 使用 `calc()` 函数
+
+`calc()` 函数允许你在 CSS 中进行动态计算，适用于响应式设计。例如：
+
+```css
+.container {
+  width: calc(100% - 20px);
+  padding: 10px;
+}
+```
+
+### 小技巧 6: 使用 `transition` 和 `transform`
+
+使用 `transition` 和 `transform` 可以创建平滑的动画效果。例如：
+
+```css
+.button {
+  transition: background-color 0.3s ease;
+}
+
+.button:hover {
+  background-color: var(--accent-color);
+  transform: scale(1.05);
+}
+```
+
+### 小技巧 7: 使用 `grid` 布局
+
+CSS Grid 是一种强大的布局系统，可以创建复杂的布局。例如：
+
+```css
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+```
+
 ```html
 // about.html
 <!DOCTYPE html>
@@ -173,43 +256,38 @@ flex 布局是 css3 中新增的布局方式，可以轻松地在容器中对齐
 ```
 
 ````js
-const openButton = document.getElementById('open-sidebar-button')
-const navbar = document.getElementById('navbar')
+const openButton = document.getElementById("open-sidebar-button");
+const navbar = document.getElementById("navbar");
 
-const media = window.matchMedia("(width < 700px)")
+const media = window.matchMedia("(width < 700px)");
 
-media.addEventListener('change', (e) => updateNavbar(e))
+media.addEventListener("change", (e) => updateNavbar(e));
 
 function updateNavbar(e) {
-  const isMobile = e.matches
-  console.log(isMobile)
+  const isMobile = e.matches;
+  console.log(isMobile);
   if (isMobile) {
-    navbar.setAttribute('inert', '')
-  }
-  else {
+    navbar.setAttribute("inert", "");
+  } else {
     // desktop device
-    navbar.removeAttribute('inert')
+    navbar.removeAttribute("inert");
   }
 }
 
 function openSidebar() {
-  navbar.classList.add('show')
-  openButton.setAttribute('aria-expanded', 'true')
-  navbar.removeAttribute('inert')
+  navbar.classList.add("show");
+  openButton.setAttribute("aria-expanded", "true");
+  navbar.removeAttribute("inert");
 }
 
 function closeSidebar() {
-  navbar.classList.remove('show')
-  openButton.setAttribute('aria-expanded', 'false')
-  navbar.setAttribute('inert', '')
+  navbar.classList.remove("show");
+  openButton.setAttribute("aria-expanded", "false");
+  navbar.setAttribute("inert", "");
 }
 
+updateNavbar(media)```css
 
-
-updateNavbar(media)
-
-
-```css
 @import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&display=swap");
 :root {
   --primary-color: #11121a;
@@ -348,4 +426,5 @@ nav a.accent-link {
     margin-right: unset;
   }
 }
+```;
 ````
