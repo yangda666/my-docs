@@ -403,7 +403,7 @@ nav a.accent-link {
     width: min(15em, 100%);
     z-index: 10;
     border-left: 1px solid var(--hover-color);
-    transition: right 300ms ease-in-out;
+    transition: right 300ms ease-in-out; 
   }
   nav.show {
     right: 0;
