@@ -486,3 +486,82 @@ foo(); // ReferenceError: a is not defined
   ```
 
 - this 词法
+
+## 第三章 对象
+
+1. 语法
+
+- 对象字面量
+
+```javascript
+var myObject = {
+  key: value,
+};
+```
+
+- 构造函数
+
+```javascript
+var myObject = new Object();
+myObject.key = value;
+```
+
+构造形式和文字形式生成的对象是一样的。唯一的区别是，构造形式中需要逐个添加属性，而文字形式可以一次添加多个。
+
+2. 类型
+
+javaScript 中类型分为两种：
+
+- 基本类型
+  string, number, boolean, null, undefined, symbol, bigint
+
+- 复杂类型
+  object, function, array, date, regexp, error
+- 内置对象
+  string, number, boolean,symbol, function, array, date, regexp, error
+
+```javascript
+var strPrimitive = "I am a string";
+typeof strPrimitive; // "string"
+strPrimitive instanceof String; // false
+
+var strObject = new String("I am a string");
+typeof strObject; // "object"
+strObject instanceof String; // true
+// 检查sub-type对象
+Object.prototype.toString.call(strObject); // [object String]
+```
+
+原始值"I am a string" 并不是一个对象，它只是一个字面量，并且是一个不可变的值。
+如果要在这个字面量上执行一些操作，比如获取长度、访问其中某个字符等，那需要将其
+转换为 String 对象。
+必要时语言会自动把字符串字面量转换成一个 String 对象，也就是说你并不需要
+显式创建一个对象。JavaScript 社区中的大多数人都认为能使用文字形式时就不要使用构
+造形式。
+
+```javascript
+var strPrimitive = "I am a string";
+console.log(strPrimitive.length); // 13
+console.log(strPrimitive.charAt(3)); // "m"
+```
+
+null 和 undefined 没有对应的构造形式，它们只有文字形式。相反，Date 只有构造，没有
+文字形式。
+
+3. 内容
+
+```javascript
+var myObject = {
+  a: 2,
+};
+
+// 使用点操作符来访问对象的属性
+// 属性访问
+myObject.a; // 2
+
+// 使用方括号来访问对象的属性
+// 键访问
+myObject["a"]; // 2
+```
+
+4. 原型
