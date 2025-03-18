@@ -564,5 +564,112 @@ myObject.a; // 2
 myObject["a"]; // 2
 ```
 
-4. 原型
-   haha
+- 可计算属性名
+
+```javascript
+var prefix = "foo";
+var myObject = {
+  [prefix + "bar"]: "hello",
+  [prefix + "baz"]: "world",
+};
+myObject["foo" + "bar"]; // hello
+myObject["foo" + "baz"]; // world
+```
+
+- 属性描述符
+
+```javascript
+var myObject = {
+  a: 2,
+};
+
+Object.defineProperty(myObject, "a", {
+  value: 2,
+  writable: false,
+  configurable: true,
+  enumerable: true,
+});
+
+myObject.a; // 2
+```
+
+- writable 决定是否可以修改属性的值
+
+```javascript
+var myObject = {};
+Object.defineProperty(myObject, "a", {
+  value: 2,
+  writable: false,
+  configurable: true,
+  enumerable: true,
+});
+myObject.a = 3;
+myObject.a; // 2
+```
+
+在严格模式下，尝试修改一个不可写属性会抛出错误。
+
+```javascript
+"use strict";
+var myObject = {};
+Object.defineProperty(myObject, "a", {
+  value: 2,
+  writable: false,
+  configurable: true,
+});
+myObject.a = 3; // 抛出错误
+```
+
+- configurable 决定是否可以修改属性描述符
+  只要属性是可配置的，就可以使用 defineProperty(..) 方法来修改属性描述符：
+
+```javascript
+var myObject = { a: 2 };
+myObject.a = 3;
+myObject.a; // 3
+Object.defineProperty(myObject, "a", {
+  value: 4,
+  writable: true,
+  configurable: false,
+  enumerable: true,
+});
+myObject.a; // 4
+myObject.a = 5;
+myObject.a; // 5
+Object.defineProperty(myObject, "a", {
+  value: 6,
+  writable: true,
+  configurable: false,
+  enumerable: true,
+}); // TypeError
+```
+
+最后一个 defineProperty(..) 会产生一个 TypeError 错误，不管是不是处于严格模式，尝试修改一个不可配置的属性描述符都会出错。注意：如你所见，把 configurable 修改成 false 是单向操作，无法撤销！除了无法修改，configurable:false 还会禁止删除这个属性：
+
+```javascript
+var myObject = { a: 2 };
+myObject.a; // 2
+delete myObject.a; // true
+myObject.a; // undefined
+Object.defineProperty(myObject, "a", {
+  value: 3,
+  configurable: false,
+});
+myObject.a; // 3
+delete myObject.a; // false
+myObject.a; // 3
+```
+
+- 不可枚举
+
+````
+
+- 对象常量
+
+```javascript
+
+````
+
+4. 复制对象
+
+- 浅拷贝
