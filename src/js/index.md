@@ -660,16 +660,92 @@ delete myObject.a; // false
 myObject.a; // 3
 ```
 
-- 不可枚举
+- 不变性
 
-````
+  - 对象常量
+    结合 writable:false 和 configurable:false 就可以创建一个真正的常量属性（不可修改、重定义或者删除）
 
-- 对象常量
+  ```javascript
+  var myObject = {};
+  Object.defineProperty(myObject, "a", {
+    value: 2,
+    writable: false,
+    configurable: false,
+  });
+  ```
 
-```javascript
+  - 禁止扩展
 
-````
+  ```javascript
+  var myObject = {
+    a: 2,
+  };
+  Object.preventExtensions(myObject);
+  myObject.b = 3;
+  myObject.b; // undefined
+  // 在非严格模式下，创建属性b 会静默失败。在严格模式下，将会抛出 TypeError 错误。
+  ```
+
+  - 密封
+
+  ```javascript
+  var myObject = {
+    a: 2,
+  };
+  Object.seal(myObject);
+  ```
+
+  Object.seal(..) 会创建一个“密封”的对象，这个方法实际上会在一个现有对象上调用 Object.preventExtensions(..) 并把所有现有属性标记为 configurable:false。
+  密封之后不仅不能添加新属性，也不能重新配置或者删除任何现有属性（虽然可以修改属性的值）。
+
+  - 冻结
+
+  ```javascript
+  var myObject = {
+    a: 2,
+  };
+  Object.freeze(myObject);
+  ```
+
+  Object.freeze(..) 会创建一个“冻结”的对象，这个方法实际上会在一个现有对象上调用 Object.seal(..) 并把所有现有属性标记为 writable:false，这样就无法修改它们的值。
+  冻结之后不仅不能添加新属性，也不能重新配置或者删除任何现有属性，也不能修改它们的值。
+
+- 纯在性
+  思考 如何判断一个属性是否存在与对象中？
+
+  ```javascript
+  var myObject = {
+    a: 2,
+  };
+  "a" in myObject; // true
+  myObject.hasOwnProperty("a"); // true
+  ```
+
+  两则有什么不同
+
+  - in 操作符会检查属性是否在对象及其[[Prototype]] 原型链中（参见第 5 点）。
+  - hasOwnProperty(..) 只会检查属性是否在 myObject 对象中，不会检查[[Prototype]] 原型链。
+
+  - 枚举
+
+  ```javascript
+  var myObject = {};
+  Object.defineProperty(myObject, "a", {
+    value: 2,
+    enumerable: true,
+  });
+  myObject.a; // 2
+  "a" in myObject; // true
+  myObject.hasOwnProperty("a"); // true
+  for (var k in myObject) {
+    console.log(k, myObject[k]);
+  }
+  // a 2
+  ```
+
+```
 
 4. 复制对象
 
 - 浅拷贝
+```
