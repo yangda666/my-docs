@@ -743,6 +743,90 @@ myObject.a; // 3
   // a 2
   ```
 
-4. 复制对象
+4. 便利
 
-- 浅拷贝
+- for in
+  for..in 循环可以用来遍历对象的可枚举属性列表（包括 [[Prototype]] 链）
+
+```javascript
+var myObject = {
+  a: 2,
+  b: 3,
+};
+for (var k in myObject) {
+  console.log(k, myObject[k]);
+}
+```
+
+ES5 中增加了一些数组的辅助迭代器，包括 forEach(..)、every(..) 和 some(..)。每种辅助迭代器都可以接受一个回调函数并把它应用到数组的每个元素上，唯一的区别就是它们对于回调函数返回值的处理方式不同。
+forEach(..) 会遍历数组中的所有值并忽略回调函数的返回值。every(..) 会一直运行直到回调函数返回 false 为止。some(..) 会一直运行直到回调函数返回 true 为止。
+
+```javascript
+var myArray = [1, 2, 3];
+myArray.forEach(function (value) {
+  console.log(value);
+});
+myArray.every(function (value) {
+  return value < 10;
+});
+myArray.some(function (value) {
+  return value < 10;
+});
+```
+
+如何直接遍历值而不是数组的下标，ES6 增加了一种用来遍历数组的 for..of 循环语法（如果对象本身定义了迭代器的话也可以遍历对象）
+
+```javascript
+var myArray = [1, 2, 3];
+for (var v of myArray) {
+  console.log(v);
+}
+```
+
+for..of 循环首先会向被访问对象请求一个迭代器对象，然后通过调用迭代器对象的
+next() 方法来遍历所有返回值。
+
+- 迭代器
+
+```javascript
+var myArray = [1, 2, 3];
+
+var it = myArray[Symbol.iterator]();
+
+it.next(); // { value: 1, done: false }
+it.next(); // { value: 2, done: false }
+it.next(); // { value: 3, done: false }
+it.next(); // { value: undefined, done: true }
+```
+
+普通的对象没有内置的 @@iterator，所以无法自动完成 for..of 遍历。之所以要这样做，有许多非常复杂的原因，不过简单来说，这样做是为了避免影响未来的对象类型。
+
+如何实现一个对象的迭代器
+
+```javascript
+var myObject = {
+  a: 1,
+  b: 2,
+  c: 3,
+};
+Object.defineProperty(myObject, Symbol.iterator, {
+  value: function () {
+    var o = this;
+    var idx = 0;
+    var ks = Object.keys(o);
+    return {
+      next: function () {
+        return {
+          value: o[ks[idx++]],
+          done: idx > ks.length,
+        };
+      },
+    };
+  },
+});
+
+for (var v of myObject) {
+  console.log(v);
+}
+// 1 2 3
+```
