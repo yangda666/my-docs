@@ -830,3 +830,96 @@ for (var v of myObject) {
 }
 // 1 2 3
 ```
+
+## 第五章 原型
+
+### 5.1 原型
+
+原型是一个对象，它包含所有可以被对象继承的属性和方法。
+
+- 思考 [[Prototype]] 引用的作用
+
+  ```javascript
+  var myObject = {
+    a: 2,
+  };
+  myObject.a; // 2
+  ```
+
+  如果我们访问 myObject.a，JS 引擎会先检查 myObject 对象本身是否有 a 属性。如果 myObject 没有 a 属性，JS 引擎会继续检查 myObject 的 [[Prototype]] 链。
+
+  ```javascript
+  var anotherObject = {
+    a: 2,
+  };
+  var myObject = Object.create(anotherObject);
+  myObject.a; // 2
+  ```
+
+  使用 for in 遍历 myObject 对象，会返回什么？
+
+  ```javascript
+  for (var k in myObject) {
+    console.log(k, myObject[k]);
+  }
+  // a 2
+  ```
+
+  使用 for..in 遍历对象时原理和查找 [[Prototype]] 链类似，任何可以通过原型链访问到（并且是 enumerable，参见第 3 章）的属性都会被枚举。使用 in 操作符来检查属性在对象中是否存在时，同样会查找对象的整条原型链（无论属性是否可枚举）。
+
+- Object.prototype
+  哪里是[[Prototype]] 的“尽头”呢？
+  所有普通的 [[Prototype]] 链最终都会指向内置的 Objectprototype。由于所有的“普通”（内置，不是特定主机的扩展）对象都“源于” （或者说把[[Prototype]] 链的顶端设置为）这个 Object.prototype 对象，所以它包含 JavaScript 中许多通用的功能。如 .toString() 、.valueOf() 、.hasOwnProperty() 等。
+
+- 属性设置和屏蔽
+  思考属性设置的过程
+
+  ```javascript
+  var anotherObject = { foo: "1" };
+  var myObject = Object.create(anotherObject);
+  myObject.foo; // "1"
+  myObject.foo = "bar";
+  myObject.foo; // "bar"
+  anotherObject.foo; // "1"
+  ```
+
+  思考屏蔽的过程
+
+  ```javascript
+  var anotherObject = { foo: 1 };
+  var myObject = Object.create(anotherObject);
+  myObject.foo; // "1"
+
+  anotherObject.hasOwnProperty("foo"); // true
+  myObject.hasOwnProperty("foo"); // false
+  myObject.foo++;
+  myObject.foo; // 2
+  anotherObject.foo; // 1
+  myObject.hasOwnProperty("foo"); // true
+  ```
+
+  如果 myObject 对象中包含名为 foo 的普通数据访问属性，这条赋值语句只会修改已有的属性值。
+  如果 foo 不是直接存在于 myObject 中，[[Prototype]] 链就会遍历，类似 [[Get]] 操作。如果原型链上找不到 foo，foo 就会被直接添加到 myObject 上。
+  如果 foo 存在于原型链上层，赋值语句 myObject.foo ="bar" 的行为就会有些不同
+  所以示例的代码执行过程就是
+  myObject.foo ++ 就是 myObject.foo = myObject.foo + 1；
+  因为 myObject 对象本身没有 foo 属性，所以 foo 会沿着原型链向上寻找，找到 foo 后，获取到 foo 的值 1 然后执行 + 1， 接着用 [[Put]]将值 2 赋给 myObject 中新建的屏蔽属性 foo。
+
+### 5.2 “类”
+
+- 类理论
+  类理论是一种描述对象的方式，它将对象定义为某种类型，然后根据类型创建对象。
+
+- 类函数
+
+  ```javascript
+  function Foo() {
+    // ...
+  }
+
+  var obj = new Foo();
+  obj.a; // 2
+  ```
+
+  调用 new Foo() 时会创建 obj 对象，然后 obj [[Prototype]] 会指向 Foo.prototype。
+  `object.getPrototypeOf(obj) === Foo.prototype; // true`
