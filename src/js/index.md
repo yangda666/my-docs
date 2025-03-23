@@ -923,3 +923,5 @@ for (var v of myObject) {
 
   调用 new Foo() 时会创建 obj 对象，然后 obj [[Prototype]] 会指向 Foo.prototype。
   `object.getPrototypeOf(obj) === Foo.prototype; // true`
+
+写不动了，先到这
