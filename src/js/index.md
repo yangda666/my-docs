@@ -924,4 +924,38 @@ for (var v of myObject) {
   调用 new Foo() 时会创建 obj 对象，然后 obj [[Prototype]] 会指向 Foo.prototype。
   `object.getPrototypeOf(obj) === Foo.prototype; // true`
 
-写不动了，先到这
+### 5.3 原型继承
+
+- 原型继承
+
+  ```javascript
+  function Foo(name) {
+    this.name = name;
+  }
+  Foo.prototype.myName = function () {
+    return this.name;
+  };
+
+  function Bar(name, label) {
+    Foo.call(this, name);
+    this.label = label;
+  }
+
+  // 创建一个新对象，将 Foo 的 prototype 赋值给这个新对象的 prototype
+  Bar.prototype = Object.create(Foo.prototype);
+
+  Bar.prototype.myLabel = function () {
+    return this.label;
+  };
+
+  var a = new Bar("a", "obj a");
+  a.myName(); // "a"
+  a.myLabel(); // "obj a"
+  ```
+
+### 5.4 对象关联
+
+[[Prototype]] 机制就是存在于对象中的一个内部链接，它会引用其他
+对象
+这个链接的作用是：如果在对象上没有找到需要的属性或者方法引用，引擎就会继续在 [[Prototype]] 关联的对象上进行查找。同理，如果在后者中也没有找到需要的
+引用就会继续查找它的[[Prototype]]，以此类推。这一系列对象的链接被称为“原型链”
