@@ -27,6 +27,9 @@ actions:
   - text: 🔥 你不知道的javaScript
     link: ./js/
 
+  - text: 🔥 javaScript设计模式
+    link: ./design-pattern/
+
   - text: ❤️‍🔥 css
     link: ./css/
 ---
