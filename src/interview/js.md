@@ -107,7 +107,7 @@ fn(1, 2); // this 指向 window
 从上面可以看到，`apply`、`call`、`bind`三者的区别在于：
 
 - 三者都可以改变函数的 `this` 对象指向
-- 三者第一个参数都是 `this` 要指向的对象，如果如果没有这个参数或参数为 `undefined` 或 `null`，则默认指向全局 `window`
+- 三者第一个参数都是 `this` 要指向的对象，如果没有这个参数或者参数为 `undefined` 或 `null`，则默认指向全局 `window`
 - 三者都可以传参，但是 `apply` 是数组，而 `call` 是参数列表，且 `apply` 和 `call` 是一次性传入参数，而 `bind` 可以分为多次传入
 - `bind` 返回绑定 `this` 之后的函数，`apply`、`call` 则是立即执行
 
@@ -1640,5 +1640,142 @@ Function.prototype.myCall = function (context, ...args) {
    - 几何信息包括节点的位置、大小、布局等。
 5. 将各个节点绘制到屏幕上
    - 浏览器将各个节点绘制到屏幕上。
+
+:::
+
+## 19. 实现事件 EventEmitter
+
+::: details 查看答案
+
+```js
+class MyEventEmitter {
+  constructor() {
+    this.event=new Map<string, Function[]>();
+  }
+  on(eventName,callback) {
+    if(!this.event.has(eventName)) {
+      this.event.set(eventName, []);
+    }
+    this.event.get(eventName).push(callback);
+  }
+  emit(eventName,...args) {
+    if(!this.event.has(eventName)) {
+      return;
+    }
+    this.event.get(eventName)
+      .forEach(callback => callback && callback(...args));
+  }
+  off(eventName,callback) {
+    if(!this.event.has(eventName)) {
+      return;
+    }
+    this.event.set(eventName, callback ? this.event.get(eventName).filter(fn => fn !== callback) : []);
+  }
+  once(eventName,callback) {
+    const fn = (...args) => {
+      callback && callback && callback(...args);
+      this.off(eventName,fn);
+    }
+    this.on(eventName,fn);
+  }
+}
+```
+
+:::
+
+## 20.实现字符串数字相加的方法（快手）
+
+::: details 查看答案
+
+```js
+function addStringNumber(str1, str2) {
+  let maxLength = Math.max(str1.length, str2.length);
+  let carry = 0;
+  let result = "";
+  for (let i = 0; i < maxLength; i++) {
+    let num1 = str1[str1.length - 1 - i] || 0;
+    let num2 = str2[str2.length - 1 - i] || 0;
+    let sum = num1 + num2 + carry;
+    carry = Math.floor(sum / 10);
+    result = (sum % 10) + result;
+  }
+  return result;
+}
+```
+
+:::
+
+## 21.实现数组的排序
+
+::: details 查看答案
+
+```js
+  function quickSort(arr){
+    for(let i = 0; i < arr.length; i++){
+      for(let j = i+1; j < arr.length j ++){
+        if(arr[i] < arr[j]){
+          [arr[i], arr[j]] = [arr[j], arr[i]]
+        }
+      }
+    }
+  }
+```
+
+:::
+
+## 22. 使用 Promise 实现每隔 1 秒输出 1,2,3
+
+::: details 查看答案
+
+```js
+[1, 2, 3].reduce((pre, curr) => {
+  pre.then(() => {
+    return new Promise((res) => {
+      setTimeOut(() => {
+        res();
+      }, 100);
+    });
+  });
+}, Promise.resolve());
+```
+
+:::
+
+## 23.使用 Promise 实现一个红绿灯交替亮的功能，三个灯亮的时间分别为：红灯 3 秒，绿灯 2 秒，黄灯 1 秒。可以用一个 Promise 链条实现不断循环亮灯
+
+::: details 查看答案
+
+```js
+function red() {
+  console.log("red");
+}
+
+function green() {
+  console.log("green");
+}
+
+function yellow() {
+  console.log("yellow");
+}
+
+function light(dealy, fn) {
+  return new Promise((res) => {
+    setTimeOut(() => {
+      fn();
+      res();
+    }, delay);
+  });
+}
+
+function step() {
+  Promise.resolve()
+    .then(() => light(3000, red))
+    .then(() => light(2000, green))
+    .then(() => light(1000, yellow));
+    .then(()=> step())
+}
+step()
+
+```
 
 :::

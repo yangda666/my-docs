@@ -230,4 +230,17 @@ export function renderWithHooks<Props, SecondArg>(
 }
 ```
 
-我们在函数调用能够保存上次执行的状态就在 这些 hook 中，
+我们在函数调用能够保存上次执行的状态就在 这些 hook 中,我们在函数中调用 hook 时，会根据当前的 fiber 节点找到对应的 hook 链表，然后根据 hook 的索引找到对应的 hook 对象，然后更新 hook 对象的 memoizedState 属性，这样我们就可以在函数中保存上次执行的状态。
+
+### 2. 在 react 中如何实现一个 useDebounce 的 hook
+
+```tsx
+const useDebounceValue = (value, delay: number) => {
+  const [debouncedValue, setDebouncedValue] = useState(value);
+  useEffect(() => {
+    const handler = setTimeout(() => setDebouncedValue(value), delay);
+    return () => clearTimeout(handler);
+  }, [value, delay]);
+  return debouncedValue;
+};
+```
