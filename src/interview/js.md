@@ -1779,3 +1779,86 @@ step()
 ```
 
 :::
+
+## 24. 封装一个异步加载图片的方法
+
+:::
+
+```jsx
+function loadImage(url) {
+  return new Promise((resolve, reject) => {
+    const image = new Image();
+    image.onload = () => {
+      resolve(image);
+    };
+    image.onerror = () => {
+      reject(new Error("图片加载错误"));
+    };
+    image.src = url;
+  });
+}
+```
+
+:::
+
+## 25. commonjs 与 esModule 的区别
+
+```ts
+  1. 动态与静态的区别
+    commonjs 的模块加载是发生在代码运行时加载的，require() 函数的路径是可以动态确定的（动态）
+    esModules 的模块时代码编译时进行加载的， 我们编写代码时就明确了依赖关系（静态）
+  2. 值的复制与动态映射
+    commonjs 的值是值得的复制
+    // A module
+    let count = 0
+    module.exports={
+      count: count
+      add(){
+        count +=1
+      }
+    }
+    // B module
+    let aModule = require("./AModule")
+    console.log(aModule.count) // 0
+    aModule.add()
+    console.log(aModule.count) //  1 1 0 （ A 中变量值的改变不会对这⾥的拷⻉值造成影响 ）
+    aModule.count += 1; //(可以修改)
+    esModule 是值的动态映射
+    // B module
+    let aModule = require("./AModule")
+    console.log(aModule.count) // 0
+    aModule.add()
+    console.log(aModule.count) // 1（ A 中变量值的改变会对这⾥的拷⻉值造成影响 ）
+    aModule.count += 1; //(不可以修改)
+
+```
+
+## 26. 封装一个并发请求
+
+```js
+  class requestQueue {
+    constructor(maxLen){
+      this.queue = []
+      this.curLen = 0
+      this.max = maxLen
+    }
+
+    add(request){
+      return new Promise((resolve,reject)=> {
+        this.queue.push({request, resolve, reject})
+        this.processQueue()
+      })
+    }
+    processQueue(){
+      if(this.queue.length > 0 && this.max > this.curLen ){
+        this.curLen ++
+        const {request, resolve, reject} = this.queue.shift()
+        request().then(resolve).catch(reject).finally(()=> {
+          this.curLen --
+          this.processQueue()
+        })
+      }
+    }
+
+  }
+```
