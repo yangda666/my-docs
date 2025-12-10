@@ -500,6 +500,21 @@
 //   }
 
 
+//   all( promises){
+//     return new Promise((resolve, rej)=>{
+//       let res = []
+//       promises.forEach((p, i)=> {
+//         promises().then(result=> {
+//           res[result] = result
+//           if(i=== promises.length ){
+//             resolve(result)
+//           }
+//         }).catch(rej)
+//       })
+//     })
+//   }
+
+
 
   
 // }
@@ -899,3 +914,147 @@
 //     }, delay);
 //   }
 // }
+
+
+// class Person {
+//   constructor(name){
+//     this.name = name
+//   }
+//   drink(){
+//     console.log("喝水")
+//   }
+// }
+
+// class Student extends Person{
+//   constructor(name){
+//     super(name)
+//   }
+//   study(){
+//     console.log("学习")
+//   }
+// }
+
+// const stu1 = new Student("张三")
+
+
+// 书写evenBus
+
+// const eventBus = new EventBus()
+// const dn = ()=> {
+//   console.log("11111")
+// }
+
+// class EventBus {
+//   constructor(){
+//     this.event= {}
+//   }
+
+//   on(eventName, callBack){
+//     if(this.event[eventName]){
+//       this.event[eventName].push(callBack)
+//     }else{
+//       this.event[eventName] = [callBack]
+//     }
+//   }
+
+//   emit(eventName, ...args){
+//     if(this.event[eventName]){
+//       this.event[eventName].forEach(callBack => {
+//         callBack(...args)
+//       });
+//     }
+//   }
+
+//   once(eventName, callBack){
+//     const wrapperFn = (...args)=> {
+//       callBack(...args)
+//       this.off(eventName, callBack)
+//     }
+//     this.on(eventName, wrapperFn)
+
+//   }
+
+//   off(eventName,callback ){
+//     if(this.event[eventName]){
+//       this.event[eventName] = this.event[eventName].filter(fn =>  fn !== callback);
+//     }
+//   }
+
+//   clear(){
+//     this.event= {}
+//   }
+// }
+
+
+
+
+// function outLog(arr){
+  
+//   arr.reduce((pre, cur)=>{
+//     return pre.then((res)=>{
+//       return new Promise((resolve, reject) => {
+//         setTimeout(() => {
+//           console.log(cur)
+//           resolve(cur)
+//         }, 1000);
+//       })
+//     })
+//   },Promise.resolve())
+// }
+
+// outLog([1,2,3])
+
+
+// fn.call(Object, ...args)
+
+
+// Function.prototype.myCall = function(content, ...args){
+
+//   const _content = content || global 
+
+//   content.fn = this
+
+
+//   const res = _content.fn(...args)
+//   delete content.fn
+//   return res
+
+
+// }
+
+// Function.prototype.Mybind = function(content){
+
+//   const _content = content || global 
+
+//   content.fn = this
+
+//   return (...args)=> {
+//     return _content.fn(...args)
+//   }
+// }
+
+// const observer = new IntersectionObserver((entries)=>{
+//   entries.forEach(value=>{
+
+//   })
+// })
+
+// observer.observe()
+
+
+
+// function foo(a) {
+// console.log( a + b );
+// b = a;
+// }
+// foo( 2 );
+
+// var num = 99
+// function b(){
+//   num ++
+//   console.log(num)
+// }
+
+
+
+
