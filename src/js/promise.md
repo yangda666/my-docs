@@ -292,3 +292,107 @@ setTimeout(console.log,0,p12)
 // Promise {<pending>}
 
 ```
+
+
+# 3. promise 的非重入性（异步的特性， 等待主线程代码执行完毕后，再执行对应的处理程序）
+
+- 当期约的状态落定时，该状态的处理程序仅仅是被排期，而非立即执行。
+
+```js
+
+console.log("start")
+let p  = Promise.resolve(2)
+p.then(res=> console.log("onResolved handler"))
+console.log("end")
+
+// outPut
+// start
+// end
+// onResolved handler
+
+
+let syncFn;
+let p = new Promise(resolve => {
+  syncFn =function () {
+    console.log("1  invoking resolve()")
+    resolve();
+    console.log("2  invoking  resolve() return")
+  }
+})
+syncFn()
+p.then(() => {console.log("3  onResolved handler")})
+
+console.log("4  syncFn  return")
+
+// outPut:
+// 1  invoking resolve()
+// 2  invoking  resolve() return
+// 4  syncFn  return
+// 3  onResolved handler
+```
+
+
+
+# Promise 的面试代码题
+
+1. 实现红绿灯
+
+```js
+ const red = function(){
+  console.log("red light")
+ }
+ const yellow = function(){
+  console.log("yellow light")
+ }
+ const green = function(){
+  console.log("green light")
+ }
+
+ const light = function(fn , delay){
+    return new Promise(resolve=>{
+      setTimeout(()=>{
+        fn()
+        resolve()
+      }, delay)
+    })
+ }
+
+  const stpe = function(){
+      light(red, 3000)
+        .then(()=>
+          light(yellow, 1000)
+        ).then(()=>
+          light(green, 3000)
+        ).then(stpe)
+  }
+
+  stpe()
+
+```
+
+2. 每隔一秒一次打印出数组中的值 [1,2,3,4]
+
+```js
+  
+  const fn = function(res){
+    return new Promise(resolve =>{
+        setTimeout(()=>{
+          console.log(res)
+          resolve()
+        }, 1000)
+      })
+  }
+  
+  function promiselog(arr){
+    arr.reduce((p, num)=>{
+      return p.then(()=>{
+        return fn(num)
+      })
+    }, Promise.resolve())
+  }
+
+  promiselog([1,2,3,4])
+
+
+
+```
