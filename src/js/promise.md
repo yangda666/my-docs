@@ -393,6 +393,4 @@ console.log("4  syncFn  return")
 
   promiselog([1,2,3,4])
 
-
-
 ```

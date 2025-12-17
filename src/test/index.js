@@ -1055,6 +1055,326 @@
 //   console.log(num)
 // }
 
+// const array = [1,2,3,4]
+// for (let index = 0; index < array.length; index++) {
+//   setTimeout(() => {
+//     console.log(arr[i])
+//   }, 1000*index);
+// }
+
+
+// 每隔1s 输出数组中的值
+
+// [1,2,3,4].reduce((pre, cur)=>{
+//   return pre.then(res=>{
+//     console.log(cur)
+//     debugger
+//     return new Promise(resolve=>{
+//       setTimeout(() => {
+//          resolve(cur)
+//       }, 1000);
+//     })
+//   })
+// }, Promise.resolve())
 
 
 
+// function myPromiseAll (promiseArr) {
+//   const result = []
+//   let count = 0
+//   const len = promiseArr.length
+//   return new Promise((resolve, reject)=>{
+//     promiseArr.forEach((element,index )=> {
+//       Promise.resolve(element).then(res=>{
+//         count ++
+//         result[index] = res
+//         if(count === len){
+//           resolve(result)
+//         }
+//       }, reason =>{
+//         reject(reason)
+//       })
+//     });
+//   })
+// }
+
+
+
+
+
+
+
+// const sidebarMenus = [{
+//       url: "",
+//       children: [
+//         {
+//           url: "/app",
+//           children: [
+//             {
+//               url: "/:id/info",
+//               children: []
+//             },
+//             {
+//               url: "/:id/detail",
+//               children: [
+//                 {
+//                   url: "/group"
+//                 }
+//               ]
+//             }
+//           ]
+//         }
+//       ]
+//     }
+// ];
+
+// // 递归的方式
+// function collectUrls(menus){
+//   let res = []
+  
+//   function dfs(menus, path=""){
+//     menus.forEach(menu=>{
+//       const currentPath = path + menu.url
+//       res.push(currentPath)
+//       if(menu.children){
+//         dfs(menu.children, currentPath)
+//       }
+//     })
+//   }
+
+//   dfs(menus)
+//   return res
+// }
+
+// // 栈方法
+// function stackCollectUrls(menus){
+//   let res = []
+//   let stack=[...menus.map(menu=>({menu, parentPath:"" }))]
+
+//   while(stack.length){
+//     const popMenu = stack.pop()
+//     const currentPath = popMenu.parentPath + popMenu.menu.url
+//     res.push(currentPath)
+//     if(popMenu.menu.children){
+//       popMenu.menu.children.forEach(item=>{
+//         stack.push({
+//           menu: item,
+//           parentPath: currentPath
+//         })
+//       })
+//     }
+//   }
+
+
+//   return res
+// }
+
+// console.log(collectUrls(sidebarMenus))
+// console.log(stackCollectUrls(sidebarMenus))
+
+// const tree = [{
+//     id: 1,
+//     pid: 0,
+//     name: 'A',
+//     children: [
+//       {
+//         id: 2,
+//         pid: 1,
+//         name: 'B',
+//         children: [
+//           {
+//             id: 4, pid: 2, name: 'D', children: [{
+//               id: 6, pid: 4, name: 'F', children: [{ id: 7, pid: 6, name: 'G' }]
+//             }]
+//           }
+//         ]
+//       },
+//       {
+//         id: 3,
+//         pid: 1,
+//         name: 'C',
+//         children: [
+//           { id: 5, pid: 3, name: 'E', children: [] }
+//         ]
+//       }
+//     ]
+//   }
+// ]
+
+// // 递归
+// function getDeepth(tree){
+//   let maxDep = 0
+//   function dfs(tree, dep){
+//     tree.forEach(item=>{
+//       maxDep = Math.max(dep, maxDep)
+//       if(item.children){
+//         dfs(item.children, dep + 1)
+//       }
+//     })
+//   }
+//   dfs(tree, 1)
+
+//   return maxDep
+// }
+
+// // 栈
+// function stackGetDeepth(tree){
+//   let maxDep = 0
+
+//   let stack = tree.map(item=>({node: item, dep: 1}))
+
+//   while(stack.length){
+//     const popNode = stack.pop()
+//     maxDep = Math.max(popNode.dep,maxDep )
+//     if(popNode.node.children){
+//       popNode.node.children.forEach(node=>{
+//         stack.push({
+//           node,
+//           dep: popNode.dep+1
+//         })
+//       })
+//     }
+//   }
+
+//   return maxDep
+// }
+
+// console.log(stackGetDeepth(tree))
+
+
+//  const tree= [
+//     {id: 1,name: "A", parentId: 0 },
+//     {id: 2,name: "B", parentId: 0 },
+//     {id: 3,name: "C", parentId: 1 },
+//     {id: 4,name: "D", parentId: 2 },
+//     {id: 5,name: "E", parentId: 4 },
+//     {id: 6,name: "F", parentId: 5 },
+//     ]
+
+//   function node2Tree(nodeList){
+//     let res = []
+//     let map = new Map()
+//     nodeList.forEach(item=>{
+//       map.set(item.id, item)
+//     })
+//     nodeList.forEach(item=>{
+//       if(item.parentId === 0){
+//         res.push(map.get(item.id))
+//       }else{
+//         const parentNode = map.get(item.parentId)
+//         if(parentNode.children){
+//           parentNode.children.push(map.get(item.id))
+//         }else{
+//           parentNode.children = [map.get(item.id)]
+//         }
+//       }
+//     })
+//     return res
+    
+//   }
+
+//   console.log(node2Tree(tree))  
+// "".padEnd()
+
+
+// const versions = ['1.2.3', '1.10.1', '1.2.10', '1.2'];
+
+// const compareVersion = (v1, v2)=>{
+//   const a1 = v1.split(".")
+//   const a2 = v2.split(".")
+//   const len = Math.max(a1.length,a2.length)
+
+//   for(let i = 0; i< len; i++){
+//     const strMaxLen = Math.max(a1.length,a2.length)
+//     const num1 = Number((a1[i] || "0").padEnd(strMaxLen, "0"))
+//     const num2 = Number((a2[i] || "0").padEnd(strMaxLen, "0"))
+//     if(num1 > num2) return -1
+//     if(num1 < num2) return 1
+//   }
+// }
+
+// versions.sort(compareVersion);
+
+// console.log(versions);
+  
+// clearTimeout
+// function mySetTimout(callback, delay){
+    
+//     let timer = setInterval(()=>{
+//       // if(timer) return
+//       callback()
+//       if(timer) clearInterval(timer)
+//     }, delay)
+//   }
+
+//   mySetTimout(()=>{console.log(2)}, 2000, )
+// function foo(){
+//   console.log(this.a)
+// }
+// const obj = {
+//   a: 3
+// }
+// const bar = foo.bind(obj)
+
+
+// // 手动实现bind 函数
+// Function.prototype.myBind= function(obj,...args){
+//   const content = this
+//   return function(...arg){
+//     content.apply(obj, [...args, ...arg])
+//   }
+// }
+
+// Function.prototype.myApply = function(obj,args){
+
+//     const fn = Symbol.for("fn")
+//     obj[fn] = this
+//     const res = obj[fn](...args)
+//     delete obj[fn]
+//     return res
+// }
+
+// new Promise((resolve, reject)=>{
+//   setTimeout(()=>{
+//     resolve()
+//   }, 1000)
+ 
+// }).then(res=>{
+//   console.log(1)
+// })
+
+
+// class MyPromise{
+//   constructor(executor){
+//      this.result = null
+//      this.reason = null
+//      this.status = "PENDING"
+//      this.fulfillCallBack= []
+//      this.rejectCallBack = []
+//     const resolve =(value)=>{
+//       this.staus = "FULFILL"
+//       this.result = value
+//       this.fulfillCallBack.forEach(fn=> fn(result))
+//     }
+//     const reject =(reason)=>{
+//       this.status= "REJECTED"
+//       this.reason = reason
+//       this.rejectCallBack.forEach(fn=> fn(reason))
+//     }
+//     executor(resolve, reject)
+//   }
+
+//   then(res, rej){
+//     if(this.status === "FULFILL"){
+//       res(result)
+//     }
+//     if(this.status === "REJECTED"){
+//       rej(REJECTED)
+//     }
+//     if(this.status === "PENDING"){
+//       this.fulfillCallBack.push(res)
+//       this.rejectCallBack.push(rej)
+//     }
+//   }
+
+// }

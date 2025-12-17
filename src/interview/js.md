@@ -1732,6 +1732,7 @@ function addStringNumber(str1, str2) {
   pre.then(() => {
     return new Promise((res) => {
       setTimeOut(() => {
+        console.log(curr)
         res();
       }, 100);
     });
@@ -1849,6 +1850,7 @@ function loadImage(url) {
         this.processQueue()
       })
     }
+
     processQueue(){
       if(this.queue.length > 0 && this.max > this.curLen ){
         this.curLen ++
@@ -1859,6 +1861,265 @@ function loadImage(url) {
         })
       }
     }
-
   }
 ```
+
+## 27. 获取路由路径 (字节)
+
+```js
+  const sidebarMenus = [{
+      url: "",
+      children: [
+        {
+          url: "/app",
+          children: [
+            {
+              url: "/:id/info",
+              children: []
+            },
+            {
+              url: "/:id/detail",
+              children: [
+                {
+                  url: "/group"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+];
+
+// 递归的方式
+function collectUrls(menus){
+  let res = []
+  
+  function dfs(menus, path=""){
+    menus.forEach(menu=>{
+      const currentPath = path + menu.url
+      res.push(currentPath)
+      if(menu.children){
+        dfs(menu.children, currentPath)
+      }
+    })
+  }
+  dfs(menus)
+  return res
+}
+
+// 栈方法
+function stackCollectUrls(menus){
+  let res = []
+  let stack=[...menus.map(menu=>({menu, parentPath:"" }))]
+
+  while(stack.length){
+    const popMenu = stack.pop()
+    const currentPath = popMenu.parentPath + popMenu.menu.url
+    res.push(currentPath)
+    if(popMenu.menu.children){
+      popMenu.menu.children.forEach(item=>{
+        stack.push({
+          menu: item,
+          parentPath: currentPath
+        })
+      })
+    }
+  }
+  return res
+}
+
+console.log(collectUrls(sidebarMenus))
+console.log(stackCollectUrls(sidebarMenus))
+```
+
+
+## 28. 获取树形数据的最大深度（快手）
+
+```js
+  const tree = [{
+    id: 1,
+    pid: 0,
+    name: 'A',
+    children: [
+      {
+        id: 2,
+        pid: 1,
+        name: 'B',
+        children: [
+          {
+            id: 4, pid: 2, name: 'D', children: [{
+              id: 6, pid: 4, name: 'F', children: [{ id: 7, pid: 6, name: 'G' }]
+            }]
+          }
+        ]
+      },
+      {
+        id: 3,
+        pid: 1,
+        name: 'C',
+        children: [
+          { id: 5, pid: 3, name: 'E', children: [] }
+        ]
+      }
+    ]
+  }
+]
+
+// 递归
+function getDeepth(tree){
+  let maxDep = 1
+  function dfs(tree, dep){
+    tree.forEach(item=>{
+      maxDep = Math.Max(dep, maxDep)
+      if(item.children){
+        dfs(item.children, dep + 1)
+      }
+    })
+  }
+  dfs(tree, 1)
+  return maxDep
+}
+
+console.log(getDeepth(tree))
+
+// 栈
+function stackGetDeepth(tree){
+  let maxDep = 0
+
+  let stack = tree.map(item=>({node: item, dep: 1}))
+
+  while(stack.length){
+    const popNode = stack.pop()
+    maxDep = Math.max(popNode.dep, maxDep)
+    if(popNode.node.children){
+      popNode.node.children.forEach(node=>{
+        stack.push({
+          node,
+          dep: popNode.dep+1
+        })
+      })
+    }
+  }
+
+  return maxDep
+}
+
+```
+
+
+## 29. 数据转化为树形结构 （美团）
+
+```js
+  const tree= [
+    {id: 1,name: "A", parentId: 0 },
+    {id: 2,name: "B", parentId: 0 },
+    {id: 3,name: "C", parentId: 1 },
+    {id: 4,name: "D", parentId: 2 },
+    {id: 5,name: "E", parentId: 4 },
+    {id: 6,name: "F", parentId: 5 },
+    ]
+
+  function node2Tree(nodeList){
+    let res = []
+    let map = new Map()
+    nodeList.forEach(item=>{
+      map.set(item.id, item)
+    })
+    nodeList.forEach(item=>{
+      if(item.parentId === 0){
+        res.push(map.get(item.id))
+      }else{
+        const parentNode = map.get(item.parentId)
+        if(parentNode.children){
+          parentNode.children.push(map.get(item.id))
+        }else{
+          parentNode.children = [map.get(item.id)]
+        }
+      }
+    })
+    return res
+  }
+
+  console.log(node2Tree(tree)) 
+
+```
+
+## 30.实现Promise.all的方法
+
+```js
+  function myPromiseAll(promises){
+    let result= []
+    let len = promises.length-1
+    let count = 0
+    return new Promise((resolve, reject)=>{
+      promises.forEach((p, index)=>{
+       Promise.resolve(p).then(res=>{
+          result[index] = res
+          count++
+          if(count === len){
+            resolve(result)
+          }
+        }, reason=>{
+          reject(reason)
+        })
+      })
+
+    })
+  }
+```
+
+## 31. 绑定一个版本号排序
+
+```js
+  const versions = ['1.2.3', '1.10.1', '1.2.10', '1.2'];
+
+  const compareVersion = (v1, v2)=>{
+    const a1 = v1.split(".")
+    const a2 = v2.split(".")
+    const len = Math.max(a1.length,a2.length)
+
+    for(let i = 0; i< len; i++){
+      const str1 = Number(a1[i]) ?? 0
+      const str2 = Number(a2[i]) ?? 0
+      if(str1 > str2) return -1
+      if(str1 < str2) return 1
+    }
+  }
+
+  versions.sort(compareVersion);
+
+  console.log(versions);
+  // ['1.2', '1.2.3', '1.2.10', '1.10.1']
+
+```
+## 32. setTimeout 实现 setInterval（数字马力）
+
+```js
+  function MySetInterval(callback, delay){
+   let timer = setTimeout(()=>{
+      if(timer) clearTimeout(timer)
+      callback();
+      MySetInterval(callback,delay )
+    },delay)
+  }
+
+  MySetInterval(()=>{console.log("1")}, 1000)
+
+```
+
+## 33. setInterval 实现 setTimeout（数字马力）
+
+```js
+  function mySetTimout(callback, delay){
+    
+    let timer = setInterval(()=>{
+      callback()
+       if(timer) clearInterval(timer)
+    }, delay)
+  }
+
+  mySetTimout(console.log, 1000, 3)
+
+```
+
