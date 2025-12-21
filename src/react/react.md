@@ -249,6 +249,8 @@ function reconcilerSingleElement(
 第二轮遍历结束
 最后 2 背标记移动 由于 2 对应的 fiber 没有 sibling 在 commitPlacement 方法中不存在 befoe 所以执行`parentNode.appendChild` 方法，对应的 dom 元素被添加父节点的最后
 
+实现
+
 ```ts
 function commitPlacement(finishedWork: Fiber): void {
   if (!supportsMutation) {
