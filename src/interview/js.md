@@ -1732,7 +1732,7 @@ function addStringNumber(str1, str2) {
   pre.then(() => {
     return new Promise((res) => {
       setTimeOut(() => {
-        console.log(curr)
+        console.log(curr);
         res();
       }, 100);
     });
@@ -1837,289 +1837,353 @@ function loadImage(url) {
 ## 26. 封装一个并发请求
 
 ```js
-  class requestQueue {
-    constructor(maxLen){
-      this.queue = []
-      this.curLen = 0
-      this.max = maxLen
-    }
+class requestQueue {
+  constructor(maxLen) {
+    this.queue = [];
+    this.curLen = 0;
+    this.max = maxLen;
+  }
 
-    add(request){
-      return new Promise((resolve,reject)=> {
-        this.queue.push({request, resolve, reject})
-        this.processQueue()
-      })
-    }
+  add(request) {
+    return new Promise((resolve, reject) => {
+      this.queue.push({ request, resolve, reject });
+      this.processQueue();
+    });
+  }
 
-    processQueue(){
-      if(this.queue.length > 0 && this.max > this.curLen ){
-        this.curLen ++
-        const {request, resolve, reject} = this.queue.shift()
-        request().then(resolve).catch(reject).finally(()=> {
-          this.curLen --
-          this.processQueue()
-        })
-      }
+  processQueue() {
+    if (this.queue.length > 0 && this.max > this.curLen) {
+      this.curLen++;
+      const { request, resolve, reject } = this.queue.shift();
+      request()
+        .then(resolve)
+        .catch(reject)
+        .finally(() => {
+          this.curLen--;
+          this.processQueue();
+        });
     }
   }
+}
 ```
 
 ## 27. 获取路由路径 (字节)
 
 ```js
-  const sidebarMenus = [{
-      url: "",
-      children: [
-        {
-          url: "/app",
-          children: [
-            {
-              url: "/:id/info",
-              children: []
-            },
-            {
-              url: "/:id/detail",
-              children: [
-                {
-                  url: "/group"
-                }
-              ]
-            }
-          ]
-        }
-      ]
-    }
+const sidebarMenus = [
+  {
+    url: "",
+    children: [
+      {
+        url: "/app",
+        children: [
+          {
+            url: "/:id/info",
+            children: [],
+          },
+          {
+            url: "/:id/detail",
+            children: [
+              {
+                url: "/group",
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  },
 ];
 
 // 递归的方式
-function collectUrls(menus){
-  let res = []
-  
-  function dfs(menus, path=""){
-    menus.forEach(menu=>{
-      const currentPath = path + menu.url
-      res.push(currentPath)
-      if(menu.children){
-        dfs(menu.children, currentPath)
+function collectUrls(menus) {
+  let res = [];
+
+  function dfs(menus, path = "") {
+    menus.forEach((menu) => {
+      const currentPath = path + menu.url;
+      res.push(currentPath);
+      if (menu.children) {
+        dfs(menu.children, currentPath);
       }
-    })
+    });
   }
-  dfs(menus)
-  return res
+  dfs(menus);
+  return res;
 }
 
 // 栈方法
-function stackCollectUrls(menus){
-  let res = []
-  let stack=[...menus.map(menu=>({menu, parentPath:"" }))]
+function stackCollectUrls(menus) {
+  let res = [];
+  let stack = [...menus.map((menu) => ({ menu, parentPath: "" }))];
 
-  while(stack.length){
-    const popMenu = stack.pop()
-    const currentPath = popMenu.parentPath + popMenu.menu.url
-    res.push(currentPath)
-    if(popMenu.menu.children){
-      popMenu.menu.children.forEach(item=>{
+  while (stack.length) {
+    const popMenu = stack.pop();
+    const currentPath = popMenu.parentPath + popMenu.menu.url;
+    res.push(currentPath);
+    if (popMenu.menu.children) {
+      popMenu.menu.children.forEach((item) => {
         stack.push({
           menu: item,
-          parentPath: currentPath
-        })
-      })
+          parentPath: currentPath,
+        });
+      });
     }
   }
-  return res
+  return res;
 }
 
-console.log(collectUrls(sidebarMenus))
-console.log(stackCollectUrls(sidebarMenus))
+console.log(collectUrls(sidebarMenus));
+console.log(stackCollectUrls(sidebarMenus));
 ```
-
 
 ## 28. 获取树形数据的最大深度（快手）
 
 ```js
-  const tree = [{
+const tree = [
+  {
     id: 1,
     pid: 0,
-    name: 'A',
+    name: "A",
     children: [
       {
         id: 2,
         pid: 1,
-        name: 'B',
+        name: "B",
         children: [
           {
-            id: 4, pid: 2, name: 'D', children: [{
-              id: 6, pid: 4, name: 'F', children: [{ id: 7, pid: 6, name: 'G' }]
-            }]
-          }
-        ]
+            id: 4,
+            pid: 2,
+            name: "D",
+            children: [
+              {
+                id: 6,
+                pid: 4,
+                name: "F",
+                children: [{ id: 7, pid: 6, name: "G" }],
+              },
+            ],
+          },
+        ],
       },
       {
         id: 3,
         pid: 1,
-        name: 'C',
-        children: [
-          { id: 5, pid: 3, name: 'E', children: [] }
-        ]
-      }
-    ]
-  }
-]
+        name: "C",
+        children: [{ id: 5, pid: 3, name: "E", children: [] }],
+      },
+    ],
+  },
+];
 
 // 递归
-function getDeepth(tree){
-  let maxDep = 1
-  function dfs(tree, dep){
-    tree.forEach(item=>{
-      maxDep = Math.Max(dep, maxDep)
-      if(item.children){
-        dfs(item.children, dep + 1)
+function getDeepth(tree) {
+  let maxDep = 1;
+  function dfs(tree, dep) {
+    tree.forEach((item) => {
+      maxDep = Math.Max(dep, maxDep);
+      if (item.children) {
+        dfs(item.children, dep + 1);
       }
-    })
+    });
   }
-  dfs(tree, 1)
-  return maxDep
+  dfs(tree, 1);
+  return maxDep;
 }
 
-console.log(getDeepth(tree))
+console.log(getDeepth(tree));
 
 // 栈
-function stackGetDeepth(tree){
-  let maxDep = 0
+function stackGetDeepth(tree) {
+  let maxDep = 0;
 
-  let stack = tree.map(item=>({node: item, dep: 1}))
+  let stack = tree.map((item) => ({ node: item, dep: 1 }));
 
-  while(stack.length){
-    const popNode = stack.pop()
-    maxDep = Math.max(popNode.dep, maxDep)
-    if(popNode.node.children){
-      popNode.node.children.forEach(node=>{
+  while (stack.length) {
+    const popNode = stack.pop();
+    maxDep = Math.max(popNode.dep, maxDep);
+    if (popNode.node.children) {
+      popNode.node.children.forEach((node) => {
         stack.push({
           node,
-          dep: popNode.dep+1
-        })
-      })
+          dep: popNode.dep + 1,
+        });
+      });
     }
   }
 
-  return maxDep
+  return maxDep;
 }
-
 ```
-
 
 ## 29. 数据转化为树形结构 （美团）
 
 ```js
-  const tree= [
-    {id: 1,name: "A", parentId: 0 },
-    {id: 2,name: "B", parentId: 0 },
-    {id: 3,name: "C", parentId: 1 },
-    {id: 4,name: "D", parentId: 2 },
-    {id: 5,name: "E", parentId: 4 },
-    {id: 6,name: "F", parentId: 5 },
-    ]
+const tree = [
+  { id: 1, name: "A", parentId: 0 },
+  { id: 2, name: "B", parentId: 0 },
+  { id: 3, name: "C", parentId: 1 },
+  { id: 4, name: "D", parentId: 2 },
+  { id: 5, name: "E", parentId: 4 },
+  { id: 6, name: "F", parentId: 5 },
+];
 
-  function node2Tree(nodeList){
-    let res = []
-    let map = new Map()
-    nodeList.forEach(item=>{
-      map.set(item.id, item)
-    })
-    nodeList.forEach(item=>{
-      if(item.parentId === 0){
-        res.push(map.get(item.id))
-      }else{
-        const parentNode = map.get(item.parentId)
-        if(parentNode.children){
-          parentNode.children.push(map.get(item.id))
-        }else{
-          parentNode.children = [map.get(item.id)]
-        }
+function node2Tree(nodeList) {
+  let res = [];
+  let map = new Map();
+  nodeList.forEach((item) => {
+    map.set(item.id, item);
+  });
+  nodeList.forEach((item) => {
+    if (item.parentId === 0) {
+      res.push(map.get(item.id));
+    } else {
+      const parentNode = map.get(item.parentId);
+      if (parentNode.children) {
+        parentNode.children.push(map.get(item.id));
+      } else {
+        parentNode.children = [map.get(item.id)];
       }
-    })
-    return res
-  }
+    }
+  });
+  return res;
+}
 
-  console.log(node2Tree(tree)) 
-
+console.log(node2Tree(tree));
 ```
 
-## 30.实现Promise.all的方法
+## 30.实现 Promise.all 的方法
 
 ```js
-  function myPromiseAll(promises){
-    let result= []
-    let len = promises.length-1
-    let count = 0
-    return new Promise((resolve, reject)=>{
-      promises.forEach((p, index)=>{
-       Promise.resolve(p).then(res=>{
-          result[index] = res
-          count++
-          if(count === len){
-            resolve(result)
+function myPromiseAll(promises) {
+  let result = [];
+  let len = promises.length - 1;
+  let count = 0;
+  return new Promise((resolve, reject) => {
+    promises.forEach((p, index) => {
+      Promise.resolve(p).then(
+        (res) => {
+          result[index] = res;
+          count++;
+          if (count === len) {
+            resolve(result);
           }
-        }, reason=>{
-          reject(reason)
-        })
-      })
-
-    })
-  }
+        },
+        (reason) => {
+          reject(reason);
+        }
+      );
+    });
+  });
+}
 ```
 
 ## 31. 绑定一个版本号排序
 
 ```js
-  const versions = ['1.2.3', '1.10.1', '1.2.10', '1.2'];
+const versions = ["1.2.3", "1.10.1", "1.2.10", "1.2"];
 
-  const compareVersion = (v1, v2)=>{
-    const a1 = v1.split(".")
-    const a2 = v2.split(".")
-    const len = Math.max(a1.length,a2.length)
+const compareVersion = (v1, v2) => {
+  const a1 = v1.split(".");
+  const a2 = v2.split(".");
+  const len = Math.max(a1.length, a2.length);
 
-    for(let i = 0; i< len; i++){
-      const str1 = Number(a1[i]) ?? 0
-      const str2 = Number(a2[i]) ?? 0
-      if(str1 > str2) return -1
-      if(str1 < str2) return 1
-    }
+  for (let i = 0; i < len; i++) {
+    const str1 = Number(a1[i]) ?? 0;
+    const str2 = Number(a2[i]) ?? 0;
+    if (str1 > str2) return -1;
+    if (str1 < str2) return 1;
   }
+};
 
-  versions.sort(compareVersion);
+versions.sort(compareVersion);
 
-  console.log(versions);
-  // ['1.2', '1.2.3', '1.2.10', '1.10.1']
-
+console.log(versions);
+// ['1.2', '1.2.3', '1.2.10', '1.10.1']
 ```
+
 ## 32. setTimeout 实现 setInterval（数字马力）
 
 ```js
-  function MySetInterval(callback, delay){
-   let timer = setTimeout(()=>{
-      if(timer) clearTimeout(timer)
-      callback();
-      MySetInterval(callback,delay )
-    },delay)
-  }
+function MySetInterval(callback, delay) {
+  let timer = setTimeout(() => {
+    if (timer) clearTimeout(timer);
+    callback();
+    MySetInterval(callback, delay);
+  }, delay);
+}
 
-  MySetInterval(()=>{console.log("1")}, 1000)
-
+MySetInterval(() => {
+  console.log("1");
+}, 1000);
 ```
 
 ## 33. setInterval 实现 setTimeout（数字马力）
 
 ```js
-  function mySetTimout(callback, delay){
-    
-    let timer = setInterval(()=>{
-      callback()
-       if(timer) clearInterval(timer)
-    }, delay)
-  }
+function mySetTimout(callback, delay) {
+  let timer = setInterval(() => {
+    callback();
+    if (timer) clearInterval(timer);
+  }, delay);
+}
 
-  mySetTimout(console.log, 1000, 3)
-
+mySetTimout(console.log, 1000, 3);
 ```
 
+## 34. 继承输出问题
+
+```js
+function Parent() {
+  this.superValue = "super";
+  this.colors = ["red", "green", "blue"];
+}
+function Child() {
+  this.subValue = "sub";
+}
+
+Child.prototype = new Parent();
+
+const child1 = new Child();
+const child2 = new Child();
+
+console.log(child1.colors === child2.colors);
+console.log(child1.superValue === child2.superValue);
+
+child1.superValue = "child1";
+child1.colors.push("black");
+child1.colors = ["yellow"];
+console.log("child1", child1);
+console.log("child2", child2);
+console.log(child2.superValue);
+console.log(child2.colors);
+```
+
+## 35 手写深拷贝
+
+```js
+  const obj= {
+    a:[1,2,3,4],
+    person:{
+      color: "black",
+      name: "张三"，
+      book:[{name: "平凡世界"}，{name:"js设计模式"}]
+    }
+  }
+
+
+  const clone = (target, cache = new WeakMap())=>{
+    if(typeof target !== "object" || typeof target == "null" ){
+      return target
+    }
+    if(cache.has(target)) return cache.get(target)
+    const res = Array.isArray(obj) ? : [] : {}
+    cache.set(target, res)
+    Reflect.ownKeys(target).forEach(key=>{
+      res[key] = clone(target[key],cache)
+    })
+    return res
+  }
+
+
+```
