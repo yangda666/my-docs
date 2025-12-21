@@ -27,7 +27,7 @@ category:
 
 - 删除其他不能复用的兄弟节点
 
-![alt text](./images/singleDiff.png)
+![alt text](../images/singleDiff.png)
 
 代码实现
 
